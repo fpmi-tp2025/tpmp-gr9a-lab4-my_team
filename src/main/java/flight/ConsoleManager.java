@@ -22,22 +22,26 @@ public class ConsoleManager {
         );
     }
 
+    public void printMessage(String message) {
+        OUT.println(message);
+    }
+
     public <T> T getInput(Class<T> clazz, String message, String errMessage, Predicate<T> predicate) {
         Function<String, T> parseFunction = (Function<String, T>) functions.get(clazz);
-        if(parseFunction == null) {
+        if (parseFunction == null) {
             throw new RuntimeException("Unsupported class: " + clazz.getName());
         }
 
-        while(true){
+        while (true) {
             OUT.println(message);
             String next = SCANNER.nextLine();
             try {
                 T apply = parseFunction.apply(next);
-                if(predicate.test(apply)){
+                if (predicate.test(apply)) {
                     return apply;
                 }
+            } catch (Exception ignored) {
             }
-            catch(Exception ignored){}
             OUT.println(errMessage);
             OUT.println();
         }
