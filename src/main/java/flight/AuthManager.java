@@ -13,69 +13,70 @@ public class AuthManager {
     private final ConnectionHandler connectionHandler;
 
     public User getAuth() {
-
         while (true) {
-            String login = null;
-            while(true) {
-                String loginInput = consoleManager.getInput(
-                        String.class,
-                        "Input login:",
-                        "Unknown login",
-                        s -> loginExists(s) || s.equals("/end") || s.equals("/help")
-                );
-                if(loginInput.equals("/end")){
-                    return null;
-                }
-                else if(loginInput.equals("/help")){
-                   final String help = """
+            String login = getLogin();
+            String password = getPassword(login);
+            if(password != null) {
+                return getUser(login, password);
+            }
+        }
+    }
+
+    private String getLogin() {
+        while(true) {
+            String loginInput = consoleManager.getInput(
+                    String.class,
+                    "Input login:",
+                    "Unknown login!",
+                    s -> loginExists(s) || s.equals("/end") || s.equals("/help")
+            );
+
+            if(loginInput.equals("/end")){
+                System.exit(0);
+            }
+
+            if(loginInput.equals("/help")){
+                final String help = """
                            Available commands:
                             - /end - end program
                             - /help - check commands
                            """ ;
 
-                   consoleManager.printMessage(help);
-                }
-                else {
-                    login = loginInput;
-                    break;
-                }
+                consoleManager.printMessage(help);
+                continue;
             }
 
-            String password = null;
-            while(true) {
-                String finalLogin = login;
-                String passwordInput = consoleManager.getInput(
-                        String.class, "Input password:",
-                        "Wrong password",
-                        s -> correctPassword(finalLogin, s) || s.equals("/back") || s.equals("/end") || s.equals("/help")
-                );
+            return loginInput;
+        }
+    }
 
-                if(passwordInput.equals("/back")){
-                    login = null;
-                    break;
-                }
-                else if(passwordInput.equals("/end")) {
+    private String getPassword(String login) {
+        while(true) {
+            String passwordInput = consoleManager.getInput(
+                    String.class, "Input password:",
+                    "Wrong password",
+                    s -> correctPassword(login, s) || s.equals("/back") || s.equals("/end") || s.equals("/help")
+            );
+
+            switch (passwordInput) {
+                case "/end" -> System.exit(0);
+                case "/back" -> {
                     return null;
                 }
-                else if(passwordInput.equals("/help")) {
+                case "/help" -> {
                     final String help = """
                             Available commands:
                              - /back - back to login
                              - /end - end program
                              - /help - check available commands
-                            """ ;
+                            """;
 
                     consoleManager.printMessage(help);
-                }
-                else{
-                    password = passwordInput;
-                    break;
+                    continue;
                 }
             }
 
-            if(password != null){
-                return getUser(login, password);
-            }
+            return passwordInput;
         }
     }
 
