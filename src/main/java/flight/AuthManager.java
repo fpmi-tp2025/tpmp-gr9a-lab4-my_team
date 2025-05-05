@@ -126,7 +126,7 @@ public class AuthManager {
                 String role = rs.getString(1);
                 int pilotId = rs.getInt(2);
                 int helicopterId = rs.getInt(3);
-                consoleManager.printMessage("Successful sign in!");
+                consoleManager.printMessage("Successful sign in!\n");
                 return new User(UserRole.valueOf(role.toUpperCase()), pilotId, helicopterId);
             }
         } catch (SQLException ex) {
