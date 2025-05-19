@@ -113,6 +113,7 @@ public class AdminStrategy implements UserStrategy {
 
     private Predicate<String> dateValidatorNotBack() {
         return s -> {
+            if(s == null) return false;
             if ("/back".equalsIgnoreCase(s)) return true;
             Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
             if (!pattern.matcher(s).matches()) {
